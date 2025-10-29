@@ -4,6 +4,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: efs-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: efs-sc
 spec:
   accessModes:
     - ReadWriteMany
@@ -11,6 +13,18 @@ spec:
   resources:
     requests:
       storage: 5Gi
+    limits:
+      storage: 10Gi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: mysampleapp-pdb
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: mysampleapp
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,6 +48,27 @@ spec:
         image: priya18082004/myimage:latest
         ports:
         - containerPort: 5000
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 3000
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           requests:
             cpu: 1000m
@@ -72,7 +107,8 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
 spec:
   ingressClassName: alb
   rules:

@@ -3,6 +3,25 @@
 # Exit on error
 set -e
 
+# --- Pre-flight checks ---
+if ! command -v aws >/dev/null 2>&1; then
+  echo "❌ AWS CLI is required but not installed."
+  echo "👉 Please install it with:"
+  echo "   sudo apt install awscli -y   # (for Ubuntu/Debian)"
+  echo "   or follow: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"
+  exit 1
+fi
+
+if ! command -v terraform >/dev/null 2>&1; then
+  echo "❌ Terraform is required but not installed."
+  echo "👉 Please install it from https://developer.hashicorp.com/terraform/downloads"
+  exit 1
+fi
+
+echo "✅ AWS CLI and Terraform detected — continuing..."
+
+
+
 
 # Track created resources for cleanup
 CREATED_BUCKET=""
@@ -145,6 +164,10 @@ if [ ! -f "$ENV_VARS_FILE" ]; then
   read -r -p "Enter VPC CIDR [10.0.0.0/16] or press ENTER for default: " USER_VPC_CIDR
   VPC_CIDR="${USER_VPC_CIDR:-10.0.0.0/16}"
 
+  read -r -p "Enter EKS Cluster Version [1.21] or press ENTER for default: " USER_CLUSTER_VERSION
+  CLUSTER_VERSION="${USER_CLUSTER_VERSION:-1.21}"
+
+
   read -r -p "Enter node group name [default] or press ENTER for default: " USER_NODE_GROUP_NAME
   NG_NAME="${USER_NODE_GROUP_NAME:-default}"
   
@@ -168,12 +191,12 @@ if [ ! -f "$ENV_VARS_FILE" ]; then
 
   cat > "$ENV_VARS_FILE" <<EOF
 region_name = "${VARS_REGION}"
-cluster_version = "1.31"
+cluster_version ="${CLUSTER_VERSION}"
 vpc_cidr = "${VPC_CIDR}"
 azs = ["${VARS_REGION}a", "${VARS_REGION}b", "${VARS_REGION}c"]
 node_group_name = "${NG_NAME}"
 enable_efs_storage = true
-project = "eks-karpenter"
+project = "${PROJECT_NAME}"
 cluster_name = "${CLUSTER_NAME}"
 environment = "${ENVIRONMENT}"
 node_instance_type = "${NODE_INSTANCE_TYPE}"
@@ -467,8 +490,4 @@ echo "Terraform is now configured to use the '${ENVIRONMENT}' workspace."
 echo "You can now run 'terraform plan' or 'terraform apply' to manage your infrastructure."
 
 
-# Prompt for GitHub repo path if not set
-if [ -z "$GITHUB_REPO_PATH" ]; then
-  read -r -p "Enter the local path to your GitHub repository (e.g., /home/ubuntu/project/eks-terraform/terraform-eks): " GITHUB_REPO_PATH
-fi
 

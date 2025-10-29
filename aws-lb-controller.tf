@@ -5,7 +5,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
   name        = "${local.cluster_name}-${var.alb_policy_name}"
   
   lifecycle {
-    create_before_destroy = var.create_before_destroy_resource
+    create_before_destroy = true
   }
   policy = jsonencode({
     Version = "2012-10-17"

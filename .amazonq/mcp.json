@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "terraform": {
+      "command": "/home/desktop-sn-03/.local/share/pipx/venvs/awslabs-terraform-mcp-server/bin/python",
+      "args": [
+        "/home/desktop-sn-03/.local/share/pipx/venvs/awslabs-terraform-mcp-server/lib/python3.12/site-packages/awslabs/terraform_mcp_server/server.py"
+      ],
+      "env": {
+        "DEBUG": "true"
+      }
+    }
+  }
+}

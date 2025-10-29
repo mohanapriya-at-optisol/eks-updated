@@ -1,6 +1,6 @@
 region_name = "ap-south-1"
 aws_account_id = "868295556072"
-cluster_version = "1.31"
+cluster_version = "1.33"
 vpc_cidr = "10.0.0.0/16"
 azs = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
 public_subnets_range = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
@@ -15,13 +15,13 @@ one_nat_gateway_per_az = false
 enable_dns_support = true
 enable_efs_storage = true
 node_group_name = "eks-karpenter-mng"
-cluster_name = "dev-new-eks-karpenter"
+cluster_name = "dev-eks-new-sample"
 environment = "dev"
 enable_eks_public_access = true
 enable_eks_private_access = true
 enable_admin_permissions = true
 irsa = true
-kms_alias = "alias/new-kms-key"
+kms_alias = "new-kms-eks-key"
 node_instance_type = "t3.medium"
 node_ami_type = "AL2023_x86_64_STANDARD"
 min_size = 2
@@ -43,7 +43,7 @@ node_iam_role_additional_policies = {
 }
 karpenter_repo = "https://charts.karpenter.sh"
 helm_chart_name = "karpenter"
-karpenter_version = 0.16.3
+karpenter_version = "0.16.3"
 karpenter_controller_policy_statements = [
   {
     Effect = "Allow"
@@ -145,8 +145,8 @@ security_group_additional_rules = {
     to_port                    = 0
     protocol                   = "-1"
     type                       = "egress"
-    source_node_security_group = false
-    cidr_blocks                = ["0.0.0.0/0"]
+    source_node_security_group = true
+    
   }
 }
 
@@ -158,10 +158,12 @@ node_security_group_additional_rules = {
     protocol    = "-1"
     type        = "ingress"
     self        = true
-    cidr_blocks = []  # empty since we're using 'self'
   }
 
 }
+efs_kms_key_name = "cm-keys"
+efs_kms_alias = "efs-cm-kms"
+deletion_window = 7
 efs_sg_name = "efs-sg"
 efs_security_group_rules = [
   {
@@ -206,4 +208,16 @@ alb_helm_repo = "https://aws.github.io/eks-charts"
 alb_chart_name = "aws-load-balancer-controller"
 alb_namespace = "kube-system"
 alb_chart_version = "1.6.2"
-
+efs_time_out = 300
+efs_cleanup = true
+efs_wait = true
+efs_wait_for_jobs = true
+efs_max_history = 3
+eks_max_unavailable_percent = 25
+launch_template_creation = true
+launch_template_name = "lt"
+alb_timeout = 300
+alb_cleanup_on_fail = true
+alb_wait = true
+alb_wait_for_jobs = true
+alb_max_history = 3

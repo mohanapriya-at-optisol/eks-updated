@@ -44,12 +44,14 @@ module "eks" {
       disk_size = var.disk_size  # Uses 50GB from your tfvars
       
       update_config = {
-      max_unavailable_percentage = var.max_unavailable_percent
+      max_unavailable_percentage = var.eks_max_unavailable_percent
     }
     
     # Add launch template for better control
     create_launch_template = var.launch_template_creation
     launch_template_name   = "${var.cluster_name}-${var.node_group_name}-${var.launch_template_name}"
+    
+  
     
       # Apply tags to managed node group
       tags = merge(var.tags, {

@@ -272,10 +272,7 @@ variable "alb_chart_version"{
 }
 
 #Have to create in tfvars
- 
-variable "create_before_destroy_resource"{
-  type = bool
-}
+
 variable "efs_time_out"{
   type = number
 }
@@ -318,4 +315,210 @@ variable "alb_wait_for_jobs"{
 }
 variable "alb_max_history"{
   type = number
+}
+
+
+
+
+# ---------------------
+# Persistent Volume Claim
+# ---------------------
+variable "pvc_name" {
+  type = string
+}
+
+variable "pvc_annotations" {
+  type = map(string)
+}
+
+variable "storage_class" {
+  type = string
+}
+
+variable "access_mode" {
+  type = string
+  default = "ReadWriteMany"
+}
+
+variable "storage_request" {
+  type = string
+}
+
+variable "storage_limit" {
+  type = string
+}
+
+# ---------------------
+# Pod Disruption Budget
+# ---------------------
+variable "pdb_name" {
+  type = string
+}
+
+variable "pdb_min_available" {
+  type = number
+}
+
+variable "pdb_selector_label" {
+  type = map(string)
+}
+
+# ---------------------
+# Deployment
+# ---------------------
+variable "deployment_name" {
+  type = string
+}
+
+variable "deployment_labels" {
+  type = map(string)
+}
+
+variable "deployment_replicas" {
+  type = number
+}
+
+variable "deployment_app_labels" {
+  type = map(string)
+}
+
+variable "deployment_selector_labels" {
+  type = map(string)
+}
+
+variable "deployment_container_name" {
+  type = string
+}
+
+variable "deployment_container_image" {
+  type = string
+}
+
+variable "deployment_container_port" {
+  type = number
+}
+
+variable "run_as_user" {
+  type = number
+}
+
+variable "run_as_group" {
+  type = number
+}
+
+# Probes
+variable "liveness_path" {
+  type = string
+}
+
+variable "liveness_probe_port" {
+  type = number
+}
+
+variable "liveness_initial_delay" {
+  type = number
+}
+
+variable "liveness_period" {
+  type = number
+}
+
+variable "readiness_path" {
+  type = string
+}
+
+variable "readiness_probe_port" {
+  type = number
+}
+
+variable "readiness_initial_delay" {
+  type = number
+}
+
+variable "readiness_period" {
+  type = number
+}
+
+# Resource requests/limits
+variable "cpu_request" {
+  type = string
+}
+
+variable "memory_request" {
+  type = string
+}
+
+variable "cpu_limit" {
+  type = string
+}
+
+variable "memory_limit" {
+  type = string
+}
+
+# Volume mounts
+variable "volume_name" {
+  type = string
+}
+
+variable "mount_path" {
+  type = string
+}
+
+
+
+# ---------------------
+# Service
+# ---------------------
+variable "service_name" {
+  type = string
+}
+
+variable "service_labels" {
+  type = map(string)
+}
+
+variable "service_type" {
+  type = string
+}
+
+variable "service_selector_labels" {
+  type = map(string)
+}
+
+variable "service_protocol" {
+  type = string
+  default = "TCP"
+}
+
+variable "service_port" {
+  type = number
+}
+
+variable "service_target_port" {
+  type = number
+}
+
+# ---------------------
+# Ingress
+# ---------------------
+variable "ingress_name" {
+  type = string
+}
+
+variable "ingress_annotations" {
+  type = map(string)
+}
+
+variable "ingress_class" {
+  type = string
+}
+
+variable "ingress_path" {
+  type = string
+}
+
+variable "path_type" {
+  type = string
+  default = "Prefix"
 }
