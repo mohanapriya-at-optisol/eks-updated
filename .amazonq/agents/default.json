@@ -16,7 +16,8 @@
     "fileSearch",
     "executeBash",
     "codeReview",
-    "displayFindings"
+    "displayFindings",
+    "@terraform"
   ],
   "toolAliases": {},
   "allowedTools": [

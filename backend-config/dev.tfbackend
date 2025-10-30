@@ -1,5 +1,5 @@
-bucket         = "t-sb-20-10-2025"
+bucket         = "dev-ek-sb-301025"
 key            = "terraform.tfstate"
 region         = "ap-south-1"
-dynamodb_table = "terraform-state-lock"
+dynamodb_table = "dev-ek"
 encrypt        = true

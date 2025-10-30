@@ -1,5 +1,3 @@
-
- 
 module "eks_karpenter" {
   source  = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git//modules/karpenter?ref=v21.3.1"
   cluster_name = module.eks.cluster_name
@@ -98,6 +96,16 @@ resource "helm_release" "karpenter" {
   set {
     name  = "clusterEndpoint"
     value = module.eks.cluster_endpoint
+  }
+
+  set {
+    name  = "controller.image.repository"
+    value = "public.ecr.aws/karpenter/karpenter"
+  }
+
+  set {
+    name  = "webhook.image.repository"
+    value = "public.ecr.aws/karpenter/karpenter"
   }
  
   depends_on = [

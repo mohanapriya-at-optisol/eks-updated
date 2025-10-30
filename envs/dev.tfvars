@@ -15,13 +15,13 @@ one_nat_gateway_per_az = false
 enable_dns_support = true
 enable_efs_storage = true
 node_group_name = "eks-karpenter-mng"
-cluster_name = "dev-eks-new-sample"
+cluster_name = "dev-new-eks-clus"
 environment = "dev"
 enable_eks_public_access = true
 enable_eks_private_access = true
 enable_admin_permissions = true
 irsa = true
-kms_alias = "new-kms-eks-key"
+kms_alias = "new-aws-kms-key"
 node_instance_type = "t3.medium"
 node_ami_type = "AL2023_x86_64_STANDARD"
 min_size = 2
@@ -33,6 +33,17 @@ tags = {
   Project     = "eks-karpenter"
   ManagedBy   = "terraform"
 }
+mng_tags =  {
+  Name = "EKS-Managed-Node-Group"
+  NodeGroup = "managed-nodes"
+  "k8s.io/cluster-autoscaler/node-template/label/karpenter.sh/discovery" = "dev-new-eks-clus"
+}
+cluster_sg_tags ={
+  Name = "EKS-Cluster-SG"
+}
+node_sg_tags = {
+  Name = "EKS-Node-SG"
+}
 instance_profile = true
 
 node_iam_role_additional_policies = {
@@ -41,9 +52,9 @@ node_iam_role_additional_policies = {
   AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   AmazonEKS_CNI_Policy              = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
-karpenter_repo = "https://charts.karpenter.sh"
+karpenter_repo = "oci://public.ecr.aws/karpenter"
 helm_chart_name = "karpenter"
-karpenter_version = "0.16.3"
+karpenter_version = "0.37.0"
 karpenter_controller_policy_statements = [
   {
     Effect = "Allow"
@@ -190,6 +201,15 @@ efs_performance = "generalPurpose"
 efs_throughput = "bursting"
 efs_transition_to_ia = "AFTER_30_DAYS"
 encrypt_efs = true
+efs_kms_key_tags = {
+  Name = "EFS-CM-Keys"
+}
+efs_sg_tags = {
+  Name = "EFS-Security-Group"
+}
+efs_tags ={
+  Name = "dev-new-eks-clus-EFS"
+}
 efs_creation_token = "efs-for-eks"
 efs_csi_driver_name = "aws-efs-csi-driver"
 helm_efs_csi_repo = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
@@ -202,11 +222,15 @@ storage_class_name = "efs-sc"
 provisioning_mode = "efs-ap"
 directory_permission = "700"
 alb_policy_name = "alb-controller-policy"
+alb_policy_tag = {
+  Name = "alb-controller-policy"
+}
 alb_role_name = "alb-controller-role"
 alb_controller_name = "aws-load-balancer"
 alb_helm_repo = "https://aws.github.io/eks-charts"
 alb_chart_name = "aws-load-balancer-controller"
 alb_namespace = "kube-system"
+alb_sa_name = "alb-controller-sa"
 alb_chart_version = "1.6.2"
 efs_time_out = 300
 efs_cleanup = true
@@ -221,3 +245,4 @@ alb_cleanup_on_fail = true
 alb_wait = true
 alb_wait_for_jobs = true
 alb_max_history = 3
+karpenter_node_template_name = "Karpenter-Launched-Node"

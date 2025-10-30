@@ -92,7 +92,10 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
         Action = [
           "ec2:CreateSecurityGroup"
         ]
-        Resource = "arn:aws:ec2:*:*:security-group/*"
+        Resource = [
+          "arn:aws:ec2:*:*:security-group/*",
+          "arn:aws:ec2:*:*:vpc/*"
+        ]
       },
       {
         Effect = "Allow"
@@ -267,10 +270,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
   })
  
 
-  tags = {
-    Name        = "${local.cluster_name}-${var.alb_policy_name}"
-    Environment = var.environment
-  }
+  tags = merge(local.general_tags, var.alb_policy_tag)
 
 }
 
@@ -289,7 +289,8 @@ resource "aws_iam_role" "aws_load_balancer_controller" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           StringEquals = {
-            "${replace(module.eks.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(module.eks.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:${local.cluster_name}-${var.alb_sa_name}"
+
             "${replace(module.eks.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
           }
         }
@@ -306,8 +307,8 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller" {
 # Kubernetes Service Account for AWS Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
-    name      = "${local.cluster_name}-aws-load-balancer-controller-sa"
-    namespace = "kube-system"
+    name      = "${local.cluster_name}-${var.alb_sa_name}"
+    namespace = var.alb_namespace
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_load_balancer_controller.arn
     }

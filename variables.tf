@@ -147,7 +147,15 @@ variable "tags" {
 variable "enable_efs_storage"{
 type = bool
 }
-
+variable "mng_tags"{
+  type = map(string)
+}
+variable "cluster_sg_tags"{
+  type = map(string)
+}
+variable "node_sg_tags"{
+  type = map(string)
+}
 variable "security_group_additional_rules" {
   type = map(object({
     description                = string
@@ -207,6 +215,17 @@ variable "efs_performance"{
 variable "efs_throughput"{
   type = string
 }
+variable "efs_kms_key_tags"{
+  type = map(string)
+
+}
+variable "efs_sg_tags"{
+  type = map(string)
+}
+variable "efs_tags"{
+  type = map(string)
+
+}
 variable "efs_transition_to_ia"{
   type = string
 }
@@ -254,6 +273,13 @@ variable "alb_policy_name"{
 }
 variable "alb_role_name"{
   type = string
+}
+variable "alb_policy_tag"{
+ type = map(string)
+}
+variable "alb_sa_name"{
+  type = string
+
 }
 variable "alb_controller_name"{
   type = string
@@ -316,209 +342,7 @@ variable "alb_wait_for_jobs"{
 variable "alb_max_history"{
   type = number
 }
-
-
-
-
-# ---------------------
-# Persistent Volume Claim
-# ---------------------
-variable "pvc_name" {
+variable "karpenter_node_template_name"{
   type = string
 }
 
-variable "pvc_annotations" {
-  type = map(string)
-}
-
-variable "storage_class" {
-  type = string
-}
-
-variable "access_mode" {
-  type = string
-  default = "ReadWriteMany"
-}
-
-variable "storage_request" {
-  type = string
-}
-
-variable "storage_limit" {
-  type = string
-}
-
-# ---------------------
-# Pod Disruption Budget
-# ---------------------
-variable "pdb_name" {
-  type = string
-}
-
-variable "pdb_min_available" {
-  type = number
-}
-
-variable "pdb_selector_label" {
-  type = map(string)
-}
-
-# ---------------------
-# Deployment
-# ---------------------
-variable "deployment_name" {
-  type = string
-}
-
-variable "deployment_labels" {
-  type = map(string)
-}
-
-variable "deployment_replicas" {
-  type = number
-}
-
-variable "deployment_app_labels" {
-  type = map(string)
-}
-
-variable "deployment_selector_labels" {
-  type = map(string)
-}
-
-variable "deployment_container_name" {
-  type = string
-}
-
-variable "deployment_container_image" {
-  type = string
-}
-
-variable "deployment_container_port" {
-  type = number
-}
-
-variable "run_as_user" {
-  type = number
-}
-
-variable "run_as_group" {
-  type = number
-}
-
-# Probes
-variable "liveness_path" {
-  type = string
-}
-
-variable "liveness_probe_port" {
-  type = number
-}
-
-variable "liveness_initial_delay" {
-  type = number
-}
-
-variable "liveness_period" {
-  type = number
-}
-
-variable "readiness_path" {
-  type = string
-}
-
-variable "readiness_probe_port" {
-  type = number
-}
-
-variable "readiness_initial_delay" {
-  type = number
-}
-
-variable "readiness_period" {
-  type = number
-}
-
-# Resource requests/limits
-variable "cpu_request" {
-  type = string
-}
-
-variable "memory_request" {
-  type = string
-}
-
-variable "cpu_limit" {
-  type = string
-}
-
-variable "memory_limit" {
-  type = string
-}
-
-# Volume mounts
-variable "volume_name" {
-  type = string
-}
-
-variable "mount_path" {
-  type = string
-}
-
-
-
-# ---------------------
-# Service
-# ---------------------
-variable "service_name" {
-  type = string
-}
-
-variable "service_labels" {
-  type = map(string)
-}
-
-variable "service_type" {
-  type = string
-}
-
-variable "service_selector_labels" {
-  type = map(string)
-}
-
-variable "service_protocol" {
-  type = string
-  default = "TCP"
-}
-
-variable "service_port" {
-  type = number
-}
-
-variable "service_target_port" {
-  type = number
-}
-
-# ---------------------
-# Ingress
-# ---------------------
-variable "ingress_name" {
-  type = string
-}
-
-variable "ingress_annotations" {
-  type = map(string)
-}
-
-variable "ingress_class" {
-  type = string
-}
-
-variable "ingress_path" {
-  type = string
-}
-
-variable "path_type" {
-  type = string
-  default = "Prefix"
-}

@@ -5,6 +5,16 @@ locals {
   karpenter_controller_role_name = "${var.environment}-kc-role"
   karpenter_controller_policy_name = "${var.environment}-kc-policy"
   karpenter_controller_service_acc = "${var.environment}-kc-sa"
+  
+  # Common tags for all resources
+  common_tags = merge(var.tags,{
+  "karpenter.sh/discovery" = local.cluster_name
+   "ClusterName" = local.cluster_name
+  })
+
+  general_tags = merge(var.tags,{
+    "ClusterName" = local.cluster_name
+  })
 
 
 #for eks security group

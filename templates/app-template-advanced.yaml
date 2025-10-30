@@ -1,0 +1,138 @@
+---
+# PersistentVolumeClaim for EFS
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${pvc_name}
+  annotations:
+%{ for annotation in pvc_annotations ~}
+    ${annotation.key}: ${annotation.value}
+%{ endfor ~}
+spec:
+  accessModes:
+    - ${access_mode}
+  storageClassName: ${storage_class}
+  resources:
+    requests:
+      storage: ${storage_request}
+    limits:
+      storage: ${storage_limit}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ${pdb_name}
+  labels:
+%{ for label in pdb_labels ~}
+    ${label.key}: ${label.value}
+%{ endfor ~}
+spec:
+  minAvailable: ${pdb_min_available}
+  selector:
+    matchLabels:
+%{ for label in pdb_selector_labels ~}
+      ${label.key}: ${label.value}
+%{ endfor ~}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${deployment_name}
+  labels:
+%{ for label in deployment_labels ~}
+    ${label.key}: ${label.value}
+%{ endfor ~}
+spec:
+  replicas: ${replicas}
+  selector:
+    matchLabels:
+%{ for label in deployment_selector_labels ~}
+      ${label.key}: ${label.value}
+%{ endfor ~}
+  template:
+    metadata:
+      labels:
+%{ for label in pod_labels ~}
+        ${label.key}: ${label.value}
+%{ endfor ~}
+    spec:
+      containers:
+      - name: ${container_name}
+        image: ${container_image}
+        ports:
+        - containerPort: ${container_port}
+        securityContext:
+          runAsNonRoot: ${run_as_non_root}
+          runAsUser: ${run_as_user}
+          runAsGroup: ${run_as_group}
+          readOnlyRootFilesystem: ${read_only_root_filesystem}
+          allowPrivilegeEscalation: ${allow_privilege_escalation}
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: ${liveness_path}
+            port: ${container_port}
+          initialDelaySeconds: ${liveness_initial_delay}
+          periodSeconds: ${liveness_period}
+        readinessProbe:
+          httpGet:
+            path: ${readiness_path}
+            port: ${container_port}
+          initialDelaySeconds: ${readiness_initial_delay}
+          periodSeconds: ${readiness_period}
+        resources:
+          requests:
+            cpu: ${cpu_request}
+            memory: ${memory_request}
+          limits:
+            cpu: ${cpu_limit}
+            memory: ${memory_limit}
+        volumeMounts:
+        - name: ${volume_name}
+          mountPath: ${mount_path}
+      volumes:
+      - name: ${volume_name}
+        persistentVolumeClaim:
+          claimName: ${pvc_name}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${service_name}
+  labels:
+%{ for label in service_labels ~}
+    ${label.key}: ${label.value}
+%{ endfor ~}
+spec:
+  type: ${service_type}
+  selector:
+%{ for label in service_selector_labels ~}
+    ${label.key}: ${label.value}
+%{ endfor ~}
+  ports:
+  - protocol: ${service_protocol}
+    port: ${service_port}
+    targetPort: ${container_port}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${ingress_name}
+  annotations:
+%{ for annotation in ingress_annotations ~}
+    ${annotation.key}: ${annotation.value}
+%{ endfor ~}
+spec:
+  ingressClassName: ${ingress_class}
+  rules:
+  - http:
+      paths:
+      - path: ${ingress_path}
+        pathType: ${path_type}
+        backend:
+          service:
+            name: ${service_name}
+            port:
+              number: ${service_port}

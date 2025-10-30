@@ -19,7 +19,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         resources:
           cpu: ${var.karpenter_cpu_limit}
       providerRef:
-        name: default
+        name: ${var.karpenter_node_template_name}
       ttlSecondsAfterEmpty: ${var.karpenter_ttl_seconds_after_empty}
   YAML
 }
@@ -31,16 +31,20 @@ resource "kubectl_manifest" "karpenter_node_template" {
     apiVersion: karpenter.k8s.aws/v1alpha1
     kind: AWSNodeTemplate
     metadata:
-      name: default
+      name: ${var.karpenter_node_template_name}
     spec:
       subnetSelector:
         karpenter.sh/discovery: ${local.cluster_name}
       securityGroupSelector:
         karpenter.sh/discovery: ${local.cluster_name}
       instanceProfile: ${module.eks_karpenter.instance_profile_name}
+      amiFamily: AL2023
+      userData: |
+        #!/bin/bash
+        /etc/eks/bootstrap.sh ${local.cluster_name}
       tags:
         karpenter.sh/discovery: ${local.cluster_name}
         Environment: ${var.environment}
-        Name: default
+        Name: ${var.karpenter_node_template_name}
   YAML
 }

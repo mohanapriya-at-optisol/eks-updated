@@ -1,0 +1,133 @@
+# Application Configuration Values with Variable Keys and Values
+
+# Basic Configuration
+pvc_name: "efs-claim"
+storage_class: "efs-sc"
+access_mode: "ReadWriteMany"
+storage_request: "5Gi"
+storage_limit: "10Gi"
+
+# PVC Annotations (both key and value are variable)
+pvc_annotations:
+  - key: "volume.beta.kubernetes.io/storage-class"
+    value: "efs-sc"
+  - key: "custom.annotation/owner"
+    value: "team-alpha"
+
+# Pod Disruption Budget
+pdb_name: "mysampleapp-pdb"
+pdb_min_available: 3
+
+# PDB Labels
+pdb_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "component"
+    value: "pdb"
+
+# PDB Selector Labels
+pdb_selector_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "tier"
+    value: "frontend"
+
+# Deployment Configuration
+deployment_name: "mysampleapp"
+replicas: 5
+container_name: "mycontainer"
+container_image: "priya18082004/myimage:latest"
+container_port: 5000
+
+# Deployment Labels
+deployment_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "version"
+    value: "v1.0"
+  - key: "environment"
+    value: "production"
+
+# Deployment Selector Labels
+deployment_selector_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "tier"
+    value: "frontend"
+
+# Pod Labels
+pod_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "tier"
+    value: "frontend"
+  - key: "env"
+    value: "dev"
+  - key: "version"
+    value: "v1.0"
+
+# Security Context
+run_as_non_root: true
+run_as_user: 1000
+run_as_group: 3000
+read_only_root_filesystem: true
+allow_privilege_escalation: false
+
+# Health Checks
+liveness_path: "/"
+liveness_initial_delay: 30
+liveness_period: 10
+readiness_path: "/"
+readiness_initial_delay: 5
+readiness_period: 5
+
+# Resource Limits
+cpu_request: "1000m"
+memory_request: "512Mi"
+cpu_limit: "1500m"
+memory_limit: "1Gi"
+
+# Volume Configuration
+volume_name: "efs-storage"
+mount_path: "/data"
+
+# Service Configuration
+service_name: "mysampleapp-service"
+service_type: "NodePort"
+service_protocol: "TCP"
+service_port: 80
+
+# Service Labels
+service_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "component"
+    value: "service"
+
+# Service Selector Labels
+service_selector_labels:
+  - key: "app"
+    value: "mysampleapp"
+  - key: "tier"
+    value: "frontend"
+
+# Ingress Configuration
+ingress_name: "mysampleapp-ingress"
+ingress_class: "alb"
+ingress_path: "/"
+path_type: "Prefix"
+
+# Ingress Annotations (both key and value are variable)
+ingress_annotations:
+  - key: "alb.ingress.kubernetes.io/scheme"
+    value: "internet-facing"
+  - key: "alb.ingress.kubernetes.io/target-type"
+    value: "ip"
+  - key: "alb.ingress.kubernetes.io/healthcheck-path"
+    value: "/"
+  - key: "alb.ingress.kubernetes.io/listen-ports"
+    value: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  - key: "alb.ingress.kubernetes.io/ssl-redirect"
+    value: "443"
+  - key: "custom.ingress/owner"
+    value: "team-alpha"

@@ -1,0 +1,56 @@
+# Simple values file for envsubst template
+pvc_name: efs-claim
+storage_class: efs-sc
+access_mode: ReadWriteMany
+storage_request: 5Gi
+storage_limit: 10Gi
+
+pdb_name: mysampleapp-pdb
+pdb_min_available: 3
+
+app_name: mysampleapp
+app_version: v1.0
+app_tier: frontend
+environment: production
+
+deployment_name: mysampleapp
+replicas: 5
+container_name: mycontainer
+container_image: priya18082004/myimage:latest
+container_port: 5000
+
+run_as_non_root: true
+run_as_user: 1000
+run_as_group: 3000
+read_only_root_filesystem: true
+allow_privilege_escalation: false
+
+liveness_path: /
+liveness_initial_delay: 30
+liveness_period: 10
+readiness_path: /
+readiness_initial_delay: 5
+readiness_period: 5
+
+cpu_request: 1000m
+memory_request: 512Mi
+cpu_limit: 1500m
+memory_limit: 1Gi
+
+volume_name: efs-storage
+mount_path: /data
+
+service_name: mysampleapp-service
+service_type: NodePort
+service_protocol: TCP
+service_port: 80
+
+ingress_name: mysampleapp-ingress
+ingress_scheme: internet-facing
+ingress_target_type: ip
+healthcheck_path: /
+listen_ports: [{"HTTP": 80}, {"HTTPS": 443}]
+ssl_redirect_port: 443
+ingress_class: alb
+ingress_path: /
+path_type: Prefix

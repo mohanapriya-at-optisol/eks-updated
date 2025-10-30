@@ -3,10 +3,7 @@ resource "aws_kms_key" "efs" {
   description             = "KMS key for EFS encryption"
   deletion_window_in_days = var.deletion_window
   
-  tags = {
-    Name        = "${local.cluster_name}-${var.efs_kms_key_name}"
-    Environment = var.environment
-  }
+  tags = merge(local.general_tags,var.efs_kms_key_tags)
 }
 
 resource "aws_kms_alias" "efs" {
@@ -20,10 +17,7 @@ resource "aws_security_group" "efs" {
   description = "Security group for EFS mount targets"
   vpc_id      = module.vpc.vpc_id
 
-  tags = {
-    Name        = "${local.cluster_name}-efs-sg"
-    Environment = var.environment
-  }
+  tags = merge(local.general_tags,var.efs_sg_tags)
 }
 resource "aws_security_group_rule" "efs_rules" {
   for_each = {
@@ -60,10 +54,7 @@ resource "aws_efs_file_system" "eks" {
     transition_to_ia = var.efs_transition_to_ia
   }
 
-  tags = {
-    Name        = "${local.cluster_name}-efs"
-    Environment = var.environment
-  }
+  tags = merge(local.general_tags,var.efs_tags)
 }
 
 # EFS Mount Targets (one per AZ)

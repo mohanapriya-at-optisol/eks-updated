@@ -1,4 +1,3 @@
-
 module "eks" {
   source  = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v21.3.1"
   
@@ -51,28 +50,27 @@ module "eks" {
     create_launch_template = var.launch_template_creation
     launch_template_name   = "${var.cluster_name}-${var.node_group_name}-${var.launch_template_name}"
     
-  
+    # Custom user data with bootstrap script
+    user_data = base64encode(templatefile("${path.module}/bootstrap.sh", {
+      cluster_name   = var.cluster_name
+      api_server_url = module.eks.cluster_endpoint
+      cluster_ca     = module.eks.cluster_certificate_authority_data
+    }))
+    
     
       # Apply tags to managed node group
-      tags = merge(var.tags, {
-        Name = "${var.cluster_name}-mng-nodes"
-        "k8s.io/cluster-autoscaler/node-template/label/karpenter.sh/discovery" = local.cluster_name
-        Environment = var.environment
-      })
+      tags = merge(local.common_tags,var.mng_tags)
     }
   }
-   security_group_tags = merge(var.tags, {
-    "karpenter.sh/discovery" = local.cluster_name
-    Name = "${var.cluster_name}-cluster-sg"
-    Environment = var.environment
-  })
+
+   security_group_tags = merge(local.common_tags, var.cluster_sg_tags)
+
+
    security_group_additional_rules = local.security_group_additional_rules_final
 
-   node_security_group_tags = merge(var.tags, {
-    "karpenter.sh/discovery" = local.cluster_name
-    Name = "${var.cluster_name}-node-sg"
-    Environment = var.environment
-  })
+   node_security_group_tags = merge(local.common_tags, var.node_sg_tags)
+
+
  node_security_group_additional_rules = {
   for rule_name, rule in var.node_security_group_additional_rules :
   rule_name => {
