@@ -71,9 +71,12 @@ karpenter_controller_policy_statements = [
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSpotPriceHistory",
       "ec2:DescribeSubnets",
+      "ec2:DescribeVpcs",
       "ec2:DeleteLaunchTemplate",
       "ec2:RunInstances",
-      "ec2:TerminateInstances"
+      "ec2:TerminateInstances",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:DescribeInstanceAttribute"
     ]
     Resource = "*"
   },

@@ -48,7 +48,7 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass" {
       securityGroupSelectorTerms:
         - tags:
             karpenter.sh/discovery: ${local.cluster_name}
-      instanceStorePolicy: RAID0
+
       userData: |
         #!/bin/bash
         /etc/eks/bootstrap.sh ${local.cluster_name}
