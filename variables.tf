@@ -416,3 +416,33 @@ variable "efs_policy_version" {
   description = "IAM policy version for EFS"
   type        = string
 }
+
+variable "letsencrypt_email" {
+  description = "Email address for Let's Encrypt certificate registration"
+  type        = string
+}
+
+variable "helm_cert_repo"{
+  type = string
+}
+
+variable "helm_cert_name"{
+  type = string
+}
+
+variable "helm_cert_namespace"{
+  type = string
+}
+
+variable "helm_cert_version"{
+  type = string
+
+}
+ variable "helm_cert_chart"{
+  type = string
+ }
+
+ variable "create_ns_for_cert"{
+  type = bool
+
+ }

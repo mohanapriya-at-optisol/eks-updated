@@ -53,3 +53,4 @@ listen_ports: [{"HTTP": 80}]
 ingress_class: alb
 ingress_path: /
 path_type: Prefix
+acm_certificate_arn: arn:aws:acm:ap-south-1:868295556072:certificate/2c6ddb84-122a-4e4d-b8da-54cb3dd3a412

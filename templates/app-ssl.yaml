@@ -1,0 +1,135 @@
+---
+# PersistentVolumeClaim for EFS
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${pvc_name}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ${storage_class}
+spec:
+  accessModes:
+    - ${access_mode}
+  storageClassName: ${storage_class}
+  resources:
+    requests:
+      storage: ${storage_request}
+    limits:
+      storage: ${storage_limit}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ${pdb_name}
+spec:
+  minAvailable: ${pdb_min_available}
+  selector:
+    matchLabels:
+      app: ${app_name}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${deployment_name}
+  labels:
+    app: ${app_name}
+    version: ${app_version}
+    environment: ${environment}
+spec:
+  replicas: ${replicas}
+  selector:
+    matchLabels:
+      app: ${app_name}
+      tier: ${app_tier}
+  template:
+    metadata:
+      labels:
+        app: ${app_name}
+        tier: ${app_tier}
+        version: ${app_version}
+        environment: ${environment}
+    spec:
+      containers:
+      - name: ${container_name}
+        image: ${container_image}
+        ports:
+        - containerPort: ${container_port}
+        securityContext:
+          runAsNonRoot: ${run_as_non_root}
+          runAsUser: ${run_as_user}
+          runAsGroup: ${run_as_group}
+          readOnlyRootFilesystem: ${read_only_root_filesystem}
+          allowPrivilegeEscalation: ${allow_privilege_escalation}
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: ${liveness_path}
+            port: ${container_port}
+          initialDelaySeconds: ${liveness_initial_delay}
+          periodSeconds: ${liveness_period}
+        readinessProbe:
+          httpGet:
+            path: ${readiness_path}
+            port: ${container_port}
+          initialDelaySeconds: ${readiness_initial_delay}
+          periodSeconds: ${readiness_period}
+        resources:
+          requests:
+            cpu: ${cpu_request}
+            memory: ${memory_request}
+          limits:
+            cpu: ${cpu_limit}
+            memory: ${memory_limit}
+        volumeMounts:
+        - name: ${volume_name}
+          mountPath: ${mount_path}
+      volumes:
+      - name: ${volume_name}
+        persistentVolumeClaim:
+          claimName: ${pvc_name}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${service_name}
+  labels:
+    app: ${app_name}
+spec:
+  type: ${service_type}
+  selector:
+    app: ${app_name}
+    tier: ${app_tier}
+  ports:
+  - protocol: ${service_protocol}
+    port: ${service_port}
+    targetPort: ${container_port}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${ingress_name}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: ${ingress_scheme}
+    alb.ingress.kubernetes.io/target-type: ${ingress_target_type}
+    alb.ingress.kubernetes.io/healthcheck-path: ${healthcheck_path}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+spec:
+  ingressClassName: ${ingress_class}
+  tls:
+  - hosts:
+    - ${alb_dns_name}
+    secretName: ${ingress_name}-tls
+  rules:
+  - host: ${alb_dns_name}
+    http:
+      paths:
+      - path: ${ingress_path}
+        pathType: ${path_type}
+        backend:
+          service:
+            name: ${service_name}
+            port:
+              number: ${service_port}
