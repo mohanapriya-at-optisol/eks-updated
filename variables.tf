@@ -346,3 +346,73 @@ variable "karpenter_node_template_name"{
   type = string
 }
 
+variable "karpenter_consolidation_policy" {
+  description = "Karpenter consolidation policy"
+  type        = string
+  validation {
+    condition     = contains(["WhenEmpty", "WhenUnderutilized"], var.karpenter_consolidation_policy)
+    error_message = "karpenter_consolidation_policy must be one of: WhenEmpty, WhenUnderutilized."
+}
+}
+
+variable "karpenter_ami_family" {
+  description = "AMI family for Karpenter nodes"
+  type        = string
+}
+
+variable "karpenter_ami_name_pattern" {
+  description = "AMI name pattern for Karpenter node selection"
+  type        = string
+}
+
+variable "karpenter_ami_owner" {
+  description = "AMI owner ID"
+  type        = string
+  
+}
+
+variable "karpenter_nodeclass_group" {
+  description = "API group for Karpenter NodeClass"
+  type        = string
+  
+}
+
+variable "karpenter_nodeclass_kind" {
+  description = "Kind for Karpenter NodeClass"
+  type        = string
+  
+}
+
+variable "karpenter_crd_force_conflicts" {
+  description = "Force conflicts for CRD installation"
+  type        = bool
+  default     = true
+}
+
+variable "karpenter_crd_server_side_apply" {
+  description = "Use server-side apply for CRDs"
+  type        = bool
+  default     = true
+}
+
+# ALB Controller IAM Policy Variables
+variable "alb_policy_statements" {
+  description = "Complete IAM policy statements for ALB Controller"
+  type = any
+}
+
+variable "alb_policy_version" {
+  description = "IAM policy version"
+  type        = string
+}
+
+# EFS CSI Driver IAM Policy Variables
+variable "efs_policy_statements" {
+  description = "Complete IAM policy statements for EFS CSI Driver"
+  type = any
+}
+
+variable "efs_policy_version" {
+  description = "IAM policy version for EFS"
+  type        = string
+}

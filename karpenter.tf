@@ -77,41 +77,34 @@ resource "helm_release" "karpenter" {
   repository       = var.karpenter_repo
   chart            = var.helm_chart_name
   version          = var.karpenter_version
+  
+  timeout          = 600
+  wait             = true
+  wait_for_jobs    = true
+  force_update     = true
+  recreate_pods    = true
+  skip_crds        = false
  
-  set {
-    name  = "serviceAccount.create"
-    value = "false"
-  }
- 
-  set {
-    name  = "serviceAccount.name"
-    value = kubernetes_service_account.karpenter_sa.metadata[0].name
-  }
- 
-  set {
-    name  = "clusterName"
-    value = module.eks.cluster_name
-  }
- 
-  set {
-    name  = "clusterEndpoint"
-    value = module.eks.cluster_endpoint
-  }
+  values = [
+    yamlencode({
+      settings = {
+        clusterName = module.eks.cluster_name
+        clusterEndpoint = module.eks.cluster_endpoint
+      }
+      serviceAccount = {
+        create = false
+        name = kubernetes_service_account.karpenter_sa.metadata[0].name
+      }
+    })
+  ]
 
-  set {
-    name  = "controller.image.repository"
-    value = "public.ecr.aws/karpenter/karpenter"
-  }
-
-  set {
-    name  = "webhook.image.repository"
-    value = "public.ecr.aws/karpenter/karpenter"
-  }
- 
   depends_on = [
     module.eks, 
     kubernetes_namespace.karpenter_na,
     module.eks_karpenter,
-    kubernetes_service_account.karpenter_sa
+    kubernetes_service_account.karpenter_sa,
+    kubectl_manifest.karpenter_nodepool_crd,
+    kubectl_manifest.karpenter_nodeclaim_crd,
+    kubectl_manifest.karpenter_ec2nodeclass_crd
   ]
 }

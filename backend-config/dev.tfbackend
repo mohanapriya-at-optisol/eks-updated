@@ -1,4 +1,4 @@
-bucket         = "dev-ek-sb-301025"
+bucket         = "terraform-dev-sb-311025"
 key            = "terraform.tfstate"
 region         = "ap-south-1"
 dynamodb_table = "dev-ek"

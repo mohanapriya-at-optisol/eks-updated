@@ -488,6 +488,3 @@ echo ""
 echo "🎉 Setup completed successfully!"
 echo "Terraform is now configured to use the '${ENVIRONMENT}' workspace."
 echo "You can now run 'terraform plan' or 'terraform apply' to manage your infrastructure."
-
-
-

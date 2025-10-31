@@ -68,7 +68,9 @@ module "eks" {
 
    security_group_additional_rules = local.security_group_additional_rules_final
 
-   node_security_group_tags = merge(local.common_tags, var.node_sg_tags)
+   node_security_group_tags = merge(local.common_tags, var.node_sg_tags, {
+     "elbv2.k8s.aws/cluster" = var.cluster_name
+   })
 
 
  node_security_group_additional_rules = {

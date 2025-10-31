@@ -1,7 +1,7 @@
 locals {
   cluster_name = var.cluster_name
   vpc_name     = "${var.cluster_name}-vpc"
-  karpenter_namespace = "${var.environment}-karpenter-namespace"
+  karpenter_namespace = "karpenter"
   karpenter_controller_role_name = "${var.environment}-kc-role"
   karpenter_controller_policy_name = "${var.environment}-kc-policy"
   karpenter_controller_service_acc = "${var.environment}-kc-sa"

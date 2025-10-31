@@ -1,5 +1,0 @@
-bucket         = "test-sb-28-10-2025"
-key            = "terraform.tfstate"
-region         = "ap-south-1"
-dynamodb_table = "test-sl"
-encrypt        = true

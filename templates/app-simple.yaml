@@ -114,7 +114,6 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ${ingress_target_type}
     alb.ingress.kubernetes.io/healthcheck-path: ${healthcheck_path}
     alb.ingress.kubernetes.io/listen-ports: '${listen_ports}'
-    alb.ingress.kubernetes.io/ssl-redirect: '${ssl_redirect_port}'
 spec:
   ingressClassName: ${ingress_class}
   rules:

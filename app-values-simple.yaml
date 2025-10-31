@@ -49,8 +49,7 @@ ingress_name: mysampleapp-ingress
 ingress_scheme: internet-facing
 ingress_target_type: ip
 healthcheck_path: /
-listen_ports: [{"HTTP": 80}, {"HTTPS": 443}]
-ssl_redirect_port: 443
+listen_ports: [{"HTTP": 80}]
 ingress_class: alb
 ingress_path: /
 path_type: Prefix

@@ -72,58 +72,8 @@ resource "aws_iam_policy" "efs_csi_driver" {
   description = "IAM policy for EFS CSI Driver"
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "elasticfilesystem:DescribeAccessPoints",
-          "elasticfilesystem:DescribeFileSystems",
-          "elasticfilesystem:DescribeMountTargets",
-          "ec2:DescribeAvailabilityZones"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "elasticfilesystem:CreateAccessPoint"
-        ]
-        Resource = "arn:aws:elasticfilesystem:*:*:file-system/*"
-        Condition = {
-          StringLike = {
-            "aws:RequestTag/efs.csi.aws.com/cluster" = "true"
-          }
-        }
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "elasticfilesystem:TagResource"
-        ]
-        Resource = [
-          "arn:aws:elasticfilesystem:*:*:file-system/*",
-          "arn:aws:elasticfilesystem:*:*:access-point/*"
-        ]
-        Condition = {
-          StringLike = {
-            "aws:ResourceTag/efs.csi.aws.com/cluster" = "true"
-          }
-        }
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "elasticfilesystem:DeleteAccessPoint"
-        ]
-        Resource = "arn:aws:elasticfilesystem:*:*:access-point/*"
-        Condition = {
-          StringEquals = {
-            "aws:ResourceTag/efs.csi.aws.com/cluster" = "true"
-          }
-        }
-      }
-    ]
+    Version = var.efs_policy_version
+    Statement = var.efs_policy_statements
   })
 }
 
@@ -132,7 +82,7 @@ resource "aws_iam_role" "efs_csi_driver" {
   name = "${local.cluster_name}-${var.efs_role_name}"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = var.efs_policy_version
     Statement = [
       {
         Effect = "Allow"
