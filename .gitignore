@@ -1,27 +1,36 @@
-# Terraform directories
-**/.terraform/*
-**/.terraform.lock.hcl
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars.backup
+*.tfplan
+.terraform/
+.terraform.lock.hcl
 
-# State files
-**/terraform.tfstate
-**/terraform.tfstate.backup
-**/*.tfstate
-**/*.tfstate.*
+# SSL Certificate files - NEVER commit these!
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
 
-# Crash log files
-**/crash.log
-**/crash.*.log
+# Generated files
+generated-*.yaml
+certificate-arn.txt
 
+# OS files
+.DS_Store
+Thumbs.db
 
-# Override files
-**/override.tf
-**/override.tf.json
-**/*_override.tf
-**/*_override.tf.json
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# CLI configuration files
-**/.terraformrc
-**/terraform.rc
+# Logs
+*.log
 
-# Plan files
-**/*.tfplan
+# Backup files
+*~
+*.bak
