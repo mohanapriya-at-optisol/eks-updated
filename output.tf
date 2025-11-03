@@ -8,11 +8,6 @@ output "cluster_endpoint" {
   value       = module.eks.cluster_endpoint
 }
 
-output "cluster_certificate_authority_data" {
-  description = "EKS cluster certificate authority data"
-  value       = module.eks.cluster_certificate_authority_data
-  sensitive   = true
-}
 
 output "cluster_arn" {
   description = "EKS cluster ARN"
