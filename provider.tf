@@ -22,6 +22,10 @@ terraform {
       source  = "hashicorp/http"
       version = "~> 3.4.0"
     }
+     tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }
 provider "aws" {
@@ -54,7 +58,7 @@ provider "helm" {
 }
  
 provider "kubectl" {
-  apply_retry_count       = 5
+  apply_retry_count       = var.kubectl_apply_retry_count
   host                    = module.eks.cluster_endpoint
   cluster_ca_certificate  = base64decode(module.eks.cluster_certificate_authority_data)
   exec {
