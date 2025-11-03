@@ -1,8 +1,12 @@
+
 variable "environment" {
     type = string
 }
 variable "region_name" {
     type = string
+}
+variable "kubectl_apply_retry_count"{
+    type = number
 }
 variable "aws_account_id" {
     type = string
@@ -417,32 +421,26 @@ variable "efs_policy_version" {
   type        = string
 }
 
-variable "letsencrypt_email" {
-  description = "Email address for Let's Encrypt certificate registration"
-  type        = string
+
+
+variable "karpenter_timeout"{
+  type  = number
 }
 
-variable "helm_cert_repo"{
-  type = string
-}
-
-variable "helm_cert_name"{
-  type = string
-}
-
-variable "helm_cert_namespace"{
-  type = string
-}
-
-variable "helm_cert_version"{
-  type = string
-
-}
- variable "helm_cert_chart"{
-  type = string
- }
-
- variable "create_ns_for_cert"{
+variable "karpenter_wait"{
   type = bool
+}
+variable "karpenter_wait_for_jobs"{
+  type = bool
+}
+variable "karpenter_force_update"{
+  type = bool
+}
+variable "karpenter_recreate_pods"{
+  type = bool
+}
 
- }
+variable"karpenter_skip_crds"{
+  type = bool
+}
+
