@@ -1,4 +1,4 @@
-# Karpenter v0.37+ (v1beta1 API) - NodePool and EC2NodeClass
+
 resource "kubectl_manifest" "karpenter_nodepool" {
   depends_on = [helm_release.karpenter]
 
