@@ -78,12 +78,12 @@ resource "helm_release" "karpenter" {
   chart            = var.helm_chart_name
   version          = var.karpenter_version
   
-  timeout          = 600
-  wait             = true
-  wait_for_jobs    = true
-  force_update     = true
-  recreate_pods    = true
-  skip_crds        = false
+  timeout          = var.karpenter_timeout
+  wait             = var.karpenter_wait
+  wait_for_jobs    = var.karpenter_wait_for_jobs
+  force_update     = var.karpenter_force_update
+  recreate_pods    = var.karpenter_recreate_pods
+  skip_crds        = var.karpenter_skip_crds
  
   values = [
     yamlencode({
