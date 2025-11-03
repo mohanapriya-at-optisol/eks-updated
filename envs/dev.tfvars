@@ -1,6 +1,7 @@
 region_name = "ap-south-1"
 aws_account_id = "868295556072"
 cluster_version = "1.33"
+kubectl_apply_retry_count = 5
 vpc_cidr = "10.0.0.0/16"
 azs = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
 public_subnets_range = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
@@ -560,12 +561,9 @@ efs_policy_statements = [
   }
 ]
 
-# Let's Encrypt Configuration
-letsencrypt_email = "mohanaads18@gmail.com"  # Replace with your actual email
-
-helm_cert_repo = "https://charts.jetstack.io"
-helm_cert_name = "helm-cert-manager"
-helm_cert_namespace = "cert-manager"
-helm_cert_version = "v1.13.3"
-helm_cert_chart = "cert-manager"
-create_ns_for_cert = true
+karpenter_timeout = 600
+karpenter_wait = true
+karapenter_wait_for_jobs = true
+karpenter_force_update = true
+kaprenter_recreate_pods = true
+karpenter_skip_crds = false
